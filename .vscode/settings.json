@@ -1,0 +1,16 @@
+{
+  "files.associations": {
+    "*.gs": "javascript"
+  },
+  "eslint.validate": [
+    "javascript"
+  ],
+  "eslint.lintTask.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.formatOnSave": true
+  }
+}

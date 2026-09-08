@@ -1,0 +1,24 @@
+{
+  "name": "navio-sheet-apps-script",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Автоматизация рабочих листов ПАО, Такси и Шаттл",
+  "scripts": {
+    "check": "npm run check:structure && npm run lint && npm run test",
+    "check:structure": "node scripts/check-structure.mjs",
+    "lint": "eslint \"src/**/*.gs\"",
+    "test": "node tests/smoke.mjs",
+    "clasp": "clasp",
+    "pull": "clasp pull",
+    "push": "clasp push",
+    "status": "clasp show-file-status",
+    "open": "clasp open-script"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@google/clasp": "^3.4.0",
+    "@types/google-apps-script": "^2.0.12",
+    "eslint": "^10.9.1",
+    "globals": "^17.11.0"
+  }
+}

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Arial, sans-serif;
+        color: #17382d;
+        background: #f4f7f5;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 28px; }
+      h1 { margin: 0 0 8px; font-size: 24px; }
+      .intro { margin: 0 0 22px; color: #51665f; line-height: 1.45; }
+      .list { display: grid; gap: 12px; }
+      .sheet {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border: 1px solid #d9e4df;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(23, 56, 45, .05);
+      }
+      .sheet-name { font-size: 17px; font-weight: 700; }
+      .sheet-status { margin-top: 5px; font-size: 13px; color: #6c7d77; }
+      .switch { position: relative; width: 48px; height: 28px; }
+      .switch input { opacity: 0; width: 0; height: 0; }
+      .slider {
+        position: absolute;
+        inset: 0;
+        cursor: pointer;
+        border-radius: 999px;
+        background: #c9d3cf;
+        transition: .18s ease;
+      }
+      .slider::before {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        left: 3px;
+        top: 3px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+        transition: .18s ease;
+      }
+      input:checked + .slider { background: #35714e; }
+      input:checked + .slider::before { transform: translateX(20px); }
+      .notice {
+        min-height: 40px;
+        margin: 18px 0 4px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        color: #51665f;
+        background: #eaf1ee;
+        line-height: 1.35;
+      }
+      .notice.error { color: #8a2727; background: #fdecec; }
+      .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+      button {
+        border: 0;
+        border-radius: 10px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .secondary { color: #355047; background: #e1e9e5; }
+      .primary { color: #fff; background: #35714e; }
+      button:disabled { cursor: wait; opacity: .65; }
+    </style>
+  </head>
+  <body>
+    <h1>Какие листы отслеживать?</h1>
+    <p class="intro">
+      Приостановленный лист останется в таблице, но NAVIO перестанет его
+      сканировать и учитывать в «Нарушителях».
+    </p>
+    <div id="list" class="list"></div>
+    <div id="notice" class="notice">Загружаю текущее состояние…</div>
+    <div class="actions">
+      <button class="secondary" type="button" onclick="google.script.host.close()">
+        Закрыть
+      </button>
+      <button id="save" class="primary" type="button" disabled>Сохранить</button>
+    </div>
+
+    <script>
+      const list = document.getElementById("list");
+      const notice = document.getElementById("notice");
+      const save = document.getElementById("save");
+
+      function render(sheets) {
+        list.replaceChildren();
+        sheets.forEach(function(sheet) {
+          const row = document.createElement("div");
+          row.className = "sheet";
+
+          const text = document.createElement("div");
+          const name = document.createElement("div");
+          name.className = "sheet-name";
+          name.textContent = sheet.name;
+          const status = document.createElement("div");
+          status.className = "sheet-status";
+          status.textContent = sheet.active ? "✅ Отслеживается" : "⏸ Приостановлен";
+          text.append(name, status);
+
+          const label = document.createElement("label");
+          label.className = "switch";
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.value = sheet.name;
+          input.checked = sheet.active;
+          input.addEventListener("change", function() {
+            status.textContent = input.checked
+              ? "✅ Отслеживается"
+              : "⏸ Приостановлен";
+          });
+          const slider = document.createElement("span");
+          slider.className = "slider";
+          label.append(input, slider);
+          row.append(text, label);
+          list.append(row);
+        });
+
+        save.disabled = false;
+        notice.className = "notice";
+        notice.textContent = "Отключённые листы можно вернуть в любой момент.";
+      }
+
+      function showError(error) {
+        save.disabled = false;
+        notice.className = "notice error";
+        notice.textContent = error && error.message
+          ? error.message
+          : "Не удалось сохранить настройку.";
+      }
+
+      save.addEventListener("click", function() {
+        const active = Array.from(list.querySelectorAll("input:checked"))
+          .map(function(input) { return input.value; });
+        if (!active.length) {
+          showError({message: "Оставьте включённым хотя бы один лист."});
+          return;
+        }
+
+        save.disabled = true;
+        notice.className = "notice";
+        notice.textContent = "Сохраняю и обновляю отчёт. Это может занять до минуты…";
+        google.script.run
+          .withSuccessHandler(function(result) {
+            render(result.sheets);
+            notice.textContent = result.changed
+              ? "Готово. Настройка сохранена, отчёт обновлён."
+              : "Изменений нет — всё уже было настроено так.";
+          })
+          .withFailureHandler(showError)
+          .saveWorkingSheetTrackingState(active);
+      });
+
+      google.script.run
+        .withSuccessHandler(render)
+        .withFailureHandler(showError)
+        .getWorkingSheetTrackingState();
+    </script>
+  </body>
+</html>

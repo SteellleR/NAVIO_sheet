@@ -1,0 +1,22 @@
+{
+  "scriptId": "PASTE_EXISTING_SCRIPT_ID_HERE",
+  "rootDir": "src",
+  "filePushOrder": [
+    "src/Constants.gs",
+    "src/Utils.gs",
+    "src/SheetTracking.gs",
+    "src/SheetTrackingDialog.html",
+    "src/Documentation.gs",
+    "src/DocumentationDialog.html",
+    "src/SheetsApi.gs",
+    "src/DropdownSync.gs",
+    "src/Logviewer.gs",
+    "src/LogCheckDate.gs",
+    "src/Teleoperators.gs",
+    "src/Violators.gs",
+    "src/Vehicles.gs",
+    "src/Formatting.gs",
+    "src/Setup.gs",
+    "src/EntryPoints.gs"
+  ]
+}

@@ -1,0 +1,1300 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Документация NAVIO</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --black: #000;
+        --black-soft: #101010;
+        --graphite: #191919;
+        --white: #fff;
+        --yellow: #faed00;
+        --yellow-hover: #e2d600;
+        --grey-100: #efefef;
+        --grey-95: #f4f4f4;
+        --grey-90: #d0d0d0;
+        --grey-80: #999;
+        --red: #ff5454;
+        --radius: 20px;
+        --shadow: 0 22px 60px rgba(0, 0, 0, .14);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        min-width: 320px;
+        color: var(--black);
+        background: var(--grey-95);
+        -webkit-font-smoothing: antialiased;
+      }
+      button, input { font: inherit; }
+      button { color: inherit; }
+      a { color: inherit; }
+      ::selection { color: var(--black); background: var(--yellow); }
+
+      .progress {
+        position: fixed;
+        inset: 0 auto auto 0;
+        z-index: 30;
+        width: 0;
+        height: 4px;
+        background: var(--yellow);
+        transition: width .08s linear;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 330px;
+        overflow: hidden;
+        color: var(--white);
+        background: var(--black);
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(0,0,0,.98) 0%, rgba(0,0,0,.88) 42%, rgba(0,0,0,.2) 100%),
+          url("https://sberautotech-site-bucket.obs.ru-moscow-1.hc.sbercloud.ru/section_technologies_2_828bfec121.jpg") center 58% / cover no-repeat;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        right: -100px;
+        bottom: -160px;
+        border: 34px solid var(--yellow);
+        border-radius: 50%;
+        opacity: .95;
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 2;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 26px 34px 42px;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 60px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: .08em;
+      }
+      .brand-mark {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border: 2px solid var(--white);
+        border-radius: 12px;
+        font-size: 17px;
+        letter-spacing: 0;
+      }
+      .top-actions { display: flex; gap: 10px; }
+      .top-button {
+        min-height: 40px;
+        padding: 0 16px;
+        border: 1px solid rgba(255,255,255,.25);
+        border-radius: 999px;
+        color: var(--white);
+        background: rgba(16,16,16,.75);
+        cursor: pointer;
+        transition: .2s ease;
+      }
+      .top-button:hover { border-color: var(--yellow); color: var(--yellow); }
+      .mode-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 8px 13px;
+        border-radius: 999px;
+        color: var(--black);
+        background: var(--yellow);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .mode-label::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--black);
+      }
+      .hero h1 {
+        max-width: 790px;
+        margin: 0;
+        font-size: clamp(44px, 7vw, 78px);
+        line-height: .92;
+        letter-spacing: -.055em;
+      }
+      .hero h1 span { color: var(--yellow); }
+      .hero-copy {
+        max-width: 610px;
+        margin: 22px 0 0;
+        color: rgba(255,255,255,.72);
+        font-size: 17px;
+        line-height: 1.5;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 30px;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 30px 34px 80px;
+      }
+      .sidebar {
+        position: sticky;
+        top: 24px;
+        align-self: start;
+        max-height: calc(100vh - 48px);
+        overflow: auto;
+        padding: 18px;
+        border-radius: var(--radius);
+        background: var(--black);
+        box-shadow: var(--shadow);
+      }
+      .search-wrap { position: relative; margin-bottom: 16px; }
+      body[data-mode="user"] .search-wrap { display: none; }
+      .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        width: 18px;
+        height: 18px;
+        color: #999;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+      .search {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px 0 38px;
+        border: 1px solid #313131;
+        border-radius: 12px;
+        outline: none;
+        color: var(--white);
+        background: var(--graphite);
+      }
+      .search:focus { border-color: var(--yellow); }
+      .search::placeholder { color: #777; }
+      .nav-title {
+        margin: 20px 10px 9px;
+        color: #777;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .nav { display: grid; gap: 4px; }
+      .nav a {
+        display: flex;
+        align-items: center;
+        min-height: 38px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        color: var(--grey-80);
+        font-size: 13px;
+        line-height: 1.25;
+        text-decoration: none;
+        transition: .18s ease;
+      }
+      .nav a:hover, .nav a.active {
+        color: var(--black);
+        background: var(--yellow);
+      }
+      .sidebar-note {
+        margin-top: 18px;
+        padding: 14px;
+        border: 1px solid #2b2b2b;
+        border-radius: 12px;
+        color: #888;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .content { min-width: 0; }
+      .doc-view { display: grid; gap: 22px; }
+      body[data-mode="user"] [data-doc="developer"],
+      body[data-mode="developer"] [data-doc="user"] { display: none; }
+      .section {
+        scroll-margin-top: 22px;
+        padding: 32px;
+        border-radius: var(--radius);
+        background: var(--white);
+        box-shadow: 0 10px 38px rgba(0,0,0,.055);
+      }
+      .section.dark { color: var(--white); background: var(--black); }
+      .section.yellow { background: var(--yellow); }
+      .section.hidden-by-search { display: none; }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        color: var(--grey-80);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 26px;
+        height: 4px;
+        border-radius: 99px;
+        background: var(--yellow);
+      }
+      .yellow .eyebrow, .yellow .muted { color: #514d00; }
+      .yellow .eyebrow::before { background: var(--black); }
+      .section h2 {
+        max-width: 760px;
+        margin: 0 0 16px;
+        font-size: clamp(30px, 4vw, 48px);
+        line-height: 1;
+        letter-spacing: -.045em;
+      }
+      .section h3 {
+        margin: 0 0 9px;
+        font-size: 19px;
+        letter-spacing: -.02em;
+      }
+      .lead {
+        max-width: 760px;
+        margin: 0;
+        color: #595959;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      .dark .lead { color: #bdbdbd; }
+      .muted { color: #666; }
+      .grid-2, .grid-3, .flow, .file-grid {
+        display: grid;
+        gap: 14px;
+        margin-top: 24px;
+      }
+      .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .file-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card {
+        position: relative;
+        min-width: 0;
+        padding: 20px;
+        border: 1px solid #e7e7e7;
+        border-radius: 16px;
+        background: var(--grey-95);
+      }
+      .dark .card { border-color: #2a2a2a; background: var(--graphite); }
+      .yellow .card { border-color: rgba(0,0,0,.12); background: rgba(255,255,255,.55); }
+      .card p, .card li {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.52;
+      }
+      .dark .card p, .dark .card li { color: #a9a9a9; }
+      .card p { margin: 0; }
+      .card ul { margin: 10px 0 0; padding-left: 18px; }
+      .card li + li { margin-top: 6px; }
+      .icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        margin-bottom: 22px;
+        place-items: center;
+        border-radius: 12px;
+        color: var(--black);
+        background: var(--yellow);
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .number {
+        margin-bottom: 20px;
+        color: var(--grey-80);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .number strong { color: var(--black); font-size: 24px; }
+      .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .flow .card:not(:last-child)::after {
+        content: "→";
+        position: absolute;
+        z-index: 2;
+        top: 20px;
+        right: -13px;
+        display: grid;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border-radius: 50%;
+        color: var(--black);
+        background: var(--yellow);
+        font-weight: 700;
+      }
+      .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 5px 11px;
+        border-radius: 999px;
+        color: var(--black);
+        background: var(--grey-100);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .pill.yellow { background: var(--yellow); }
+      .pill.black { color: var(--white); background: var(--black); }
+      .callout {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        margin-top: 22px;
+        padding: 18px;
+        border-left: 5px solid var(--yellow);
+        border-radius: 0 14px 14px 0;
+        background: var(--grey-95);
+      }
+      .dark .callout { background: var(--graphite); }
+      .callout.danger { border-color: var(--red); }
+      .callout-symbol { font-size: 20px; }
+      .callout strong { display: block; margin-bottom: 5px; }
+      .callout p { margin: 0; color: #666; font-size: 14px; line-height: 1.5; }
+      .dark .callout p { color: #aaa; }
+      .clean-list { display: grid; gap: 12px; margin: 24px 0 0; padding: 0; list-style: none; }
+      .clean-list li {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 10px;
+        color: #4f4f4f;
+        line-height: 1.5;
+      }
+      .clean-list b {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border-radius: 9px;
+        color: var(--black);
+        background: var(--yellow);
+        font-size: 12px;
+      }
+      details {
+        border-top: 1px solid #e5e5e5;
+      }
+      details:last-child { border-bottom: 1px solid #e5e5e5; }
+      summary {
+        position: relative;
+        padding: 18px 42px 18px 0;
+        cursor: pointer;
+        font-weight: 700;
+        list-style: none;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary::after {
+        content: "+";
+        position: absolute;
+        right: 6px;
+        top: 13px;
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--yellow);
+        font-size: 20px;
+        font-weight: 400;
+      }
+      details[open] summary::after { content: "−"; }
+      details p, details ul {
+        margin: 0 42px 18px 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+      details ul { padding-left: 20px; }
+      code {
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: #e9e9e9;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: .9em;
+      }
+      .dark code { background: #292929; }
+      .code-block {
+        position: relative;
+        overflow: auto;
+        margin-top: 16px;
+        padding: 18px 52px 18px 18px;
+        border-radius: 14px;
+        color: #e9e9e9;
+        background: var(--black-soft);
+        font: 13px/1.6 "SFMono-Regular", Consolas, monospace;
+        white-space: pre;
+      }
+      .copy-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #333;
+        border-radius: 9px;
+        color: #bbb;
+        background: #202020;
+        cursor: pointer;
+      }
+      .copy-button:hover { color: var(--black); background: var(--yellow); }
+      .file {
+        padding: 17px;
+        border-radius: 14px;
+        background: var(--grey-95);
+      }
+      .file-name {
+        display: inline-block;
+        margin-bottom: 9px;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .file p { margin: 0; color: #666; font-size: 13px; line-height: 1.45; }
+      .audience-choice {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 24px;
+      }
+      .audience-choice .card { background: rgba(255,255,255,.58); }
+      .audience-choice strong { display: block; margin-bottom: 8px; font-size: 18px; }
+      .prompt-list { display: grid; gap: 16px; margin-top: 24px; }
+      .prompt-card {
+        overflow: hidden;
+        border: 1px solid #2b2b2b;
+        border-radius: 18px;
+        background: var(--graphite);
+      }
+      .prompt-card:last-child { border-bottom: 1px solid #2b2b2b; }
+      .prompt-card summary {
+        padding: 20px 62px 20px 20px;
+        color: var(--white);
+        font-size: 17px;
+      }
+      .prompt-card summary::after { right: 18px; top: 15px; }
+      .prompt-body { padding: 0 20px 20px; }
+      .prompt-description { margin: 0 0 16px !important; color: #aaa !important; }
+      .prompt-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+      .prompt-button {
+        min-height: 38px;
+        padding: 8px 13px;
+        border: 1px solid #3a3a3a;
+        border-radius: 10px;
+        color: #ddd;
+        background: #242424;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .prompt-button:hover { color: var(--black); border-color: var(--yellow); background: var(--yellow); }
+      .prompt-button.primary { color: var(--black); border-color: var(--yellow); background: var(--yellow); }
+      .prompt-button.danger:hover { color: var(--white); border-color: var(--red); background: var(--red); }
+      .prompt-text {
+        display: block;
+        width: 100%;
+        min-height: 260px;
+        max-height: 440px;
+        resize: vertical;
+        padding: 16px;
+        border: 1px solid #333;
+        border-radius: 13px;
+        outline: none;
+        color: #d7d7d7;
+        background: #0d0d0d;
+        font: 12px/1.55 "SFMono-Regular", Consolas, monospace;
+      }
+      .prompt-text:not([readonly]) { color: var(--white); border-color: var(--yellow); }
+      .prompt-status { min-height: 18px; margin: 10px 2px 0 !important; color: #888 !important; font-size: 12px !important; }
+      .prompt-status.success { color: var(--yellow) !important; }
+      .prompt-status.error { color: var(--red) !important; }
+      .table-wrap { overflow-x: auto; margin-top: 22px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { padding: 13px 12px; border-bottom: 1px solid #e3e3e3; text-align: left; vertical-align: top; }
+      th { color: #666; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+      .empty-search {
+        display: none;
+        padding: 40px;
+        border: 2px dashed var(--grey-90);
+        border-radius: var(--radius);
+        text-align: center;
+      }
+      .empty-search.visible { display: block; }
+      .empty-search strong { display: block; margin-bottom: 8px; font-size: 22px; }
+      .back-top {
+        position: fixed;
+        right: 24px;
+        bottom: 22px;
+        z-index: 20;
+        display: none;
+        width: 46px;
+        height: 46px;
+        border: 0;
+        border-radius: 50%;
+        color: var(--black);
+        background: var(--yellow);
+        box-shadow: 0 10px 26px rgba(0,0,0,.2);
+        cursor: pointer;
+        font-size: 21px;
+      }
+      .back-top.visible { display: block; }
+
+      @media (max-width: 820px) {
+        .hero-inner { padding-inline: 22px; }
+        .topbar { margin-bottom: 46px; }
+        .layout { grid-template-columns: 1fr; padding: 20px 18px 70px; }
+        .sidebar { position: relative; top: 0; max-height: none; }
+        .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-3, .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .flow .card::after { display: none !important; }
+      }
+      @media (max-width: 560px) {
+        .hero { min-height: 360px; }
+        .brand-word { display: none; }
+        .top-button { padding-inline: 12px; }
+        .section { padding: 24px 20px; }
+        .grid-2, .grid-3, .flow, .file-grid, .audience-choice { grid-template-columns: 1fr; }
+        .nav { grid-template-columns: 1fr; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body data-mode="<?= documentationMode ?>">
+    <div id="progress" class="progress" aria-hidden="true"></div>
+
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="topbar">
+          <div class="brand" aria-label="NAVIO">
+            <span class="brand-mark">N</span>
+            <span class="brand-word">NAVIO · OPERATIONS</span>
+          </div>
+          <div class="top-actions">
+            <button class="top-button" type="button" onclick="google.script.host.close()">Закрыть</button>
+          </div>
+        </div>
+        <div id="modeLabel" class="mode-label"></div>
+        <h1 id="heroTitle"></h1>
+        <p id="heroCopy" class="hero-copy"></p>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Навигация по документации">
+        <label class="search-wrap">
+          <span style="position:absolute;clip:rect(0 0 0 0)">Поиск</span>
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"></circle>
+            <path d="m15.5 15.5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+          </svg>
+          <input id="search" class="search" type="search" placeholder="Найти в разделе…" autocomplete="off">
+        </label>
+        <div class="nav-title">Содержание</div>
+        <nav id="nav" class="nav"></nav>
+        <div id="sidebarNote" class="sidebar-note"></div>
+      </aside>
+
+      <main class="content">
+        <div id="userDoc" class="doc-view" data-doc="user">
+          <section id="user-start" class="section yellow" data-nav-title="С чего начать">
+            <div class="eyebrow">Быстрый старт</div>
+            <h2>Таблица помогает держать кейсы под контролем</h2>
+            <p class="lead">Заполняй строку кейса как обычно. Скрипты сами подготовят ссылку на Logviewer, запомнят контрольную дату и покажут просрочку в «Нарушителях».</p>
+            <div class="flow">
+              <article class="card"><div class="number"><strong>01</strong></div><h3>Создай кейс</h3><p>Заполни дату, ВАТС, телеоператора и остальные поля строки.</p></article>
+              <article class="card"><div class="number"><strong>02</strong></div><h3>Открой лог</h3><p>В Logviewer появится служебная ссылка «Добавить лог».</p></article>
+              <article class="card"><div class="number"><strong>03</strong></div><h3>Актуализируй</h3><p>Выбери «Сегодня», если проверка продолжается.</p></article>
+              <article class="card"><div class="number"><strong>04</strong></div><h3>Закрой проверку</h3><p>Настоящая ссылка на лог автоматически даст статус «заполнен».</p></article>
+            </div>
+          </section>
+
+          <section id="user-sheets" class="section" data-nav-title="Рабочие листы">
+            <div class="eyebrow">Основная работа</div>
+            <h2>ПАО, Такси, Шаттл и т.п.</h2>
+            <p class="lead">Это рабочие листы с кейсами. Их набор может отличаться в зависимости от актуальных задач и проектов. Скрипт ориентируется на названия служебных столбцов, поэтому их заголовки нельзя самовольно переименовывать.</p>
+            <div class="callout"><div class="callout-symbol">→</div><div><strong>Строку можно заполнять в удобном порядке</strong><p>После любого редактирования строки скрипт ещё раз проверяет дату и ВАТС, поэтому «Добавить лог» восстановится, когда данных станет достаточно.</p></div></div>
+          </section>
+
+          <section id="user-log" class="section dark" data-nav-title="Дата и Logviewer">
+            <div class="eyebrow">Жизненный цикл</div>
+            <h2>Дата проверки и Logviewer работают вместе</h2>
+            <p class="lead">Контрольная дата показывает, когда лог проверяли в последний раз. Ссылка показывает, создан ли настоящий лог.</p>
+            <div class="grid-2">
+              <article class="card"><div class="icon">1</div><h3>Первая дата</h3><p>Дата события один раз копируется в «Дата проверки лога». Если дату события сразу исправили, скрипт перенесёт исправление, пока контрольную дату ещё не меняли вручную.</p></article>
+              <article class="card"><div class="icon">↻</div><h3>Сегодня</h3><p>Выбор «Сегодня» превращается в настоящую фиксированную дату. Завтра она сама не поменяется.</p></article>
+              <article class="card"><div class="icon">↗</div><h3>Добавить лог</h3><p>Служебная ссылка строится по дате события и ВАТС. Её можно использовать для перехода в Logviewer.</p></article>
+              <article class="card"><div class="icon">✓</div><h3>Заполнен</h3><p>Настоящая ссылка вида <code>/logs/</code> ставит «заполнен». Если ссылку удалить, статус откатится к дате события.</p></article>
+            </div>
+          </section>
+
+          <section id="user-violators" class="section" data-nav-title="Нарушители">
+            <div class="eyebrow">Контроль сроков</div>
+            <h2>Когда появляется нарушение</h2>
+            <p class="lead">Если контрольная дата не обновлена больше четырёх дней и лог ещё не заполнен, адрес строки появляется напротив телеоператора.</p>
+            <div class="pill-row"><span class="pill yellow">На пятый день — нарушение</span><span class="pill">Окно контроля — 30 дней</span><span class="pill black">Исправления обратимы</span></div>
+            <ul class="clean-list">
+              <li><b>1</b><span>В столбце «Дата не обновлена» появляется <strong>😡</strong>.</span></li>
+              <li><b>2</b><span>Адрес записывается как <strong>Такси / 1852</strong>. Несколько адресов разделяются точкой с запятой.</span></li>
+              <li><b>3</b><span>После «Сегодня» или статуса «заполнен» ошибка исчезает автоматически.</span></li>
+              <li><b>4</b><span>Кейсы старше 30 дней не учитываются, чтобы не тащить бесконечную историю.</span></li>
+            </ul>
+          </section>
+
+          <section id="user-admin" class="section dark" data-nav-title="Для операторов таблицы">
+            <div class="eyebrow">Расширенные настройки</div>
+            <h2>Дальше — зона операторов таблицы</h2>
+            <p class="lead">Следующие разделы нужны тем, кто осознанно включает направления, меняет справочники или дополняет структуру таблиц. Для обычной работы с кейсами эти настройки трогать не требуется.</p>
+            <div class="pill-row"><span class="pill yellow">Управление листами</span><span class="pill yellow">Справочник людей</span><span class="pill yellow">Изменение структуры</span></div>
+          </section>
+
+          <section id="user-tracking" class="section yellow" data-nav-title="Управление листами">
+            <div class="eyebrow">Контроль направлений</div>
+            <h2>Лист можно поставить на паузу</h2>
+            <p class="lead">Если направление временно не работает, его не нужно удалять или просить разработчика править код.</p>
+            <div class="grid-2">
+              <article class="card"><h3>Как выключить</h3><p>Открой <strong>NAVIO → Управление листами</strong>, выключи нужный переключатель и нажми «Сохранить».</p></article>
+              <article class="card"><h3>Что изменится</h3><p>Лист останется на месте, но перестанет сканироваться, обновляться служебной логикой и попадать в «Нарушителей».</p></article>
+              <article class="card"><h3>Как вернуть</h3><p>Включи переключатель обратно. Скрипт подтянет актуальные списки, даты, ссылки и снова добавит лист в контроль.</p></article>
+              <article class="card"><h3>Защита</h3><p>Отключить все рабочие листы нельзя: хотя бы один всегда должен остаться активным.</p></article>
+            </div>
+          </section>
+
+          <section id="user-teleoperators" class="section" data-nav-title="Телеоператоры">
+            <div class="eyebrow">Справочник людей</div>
+            <h2>Лист «Телеоператоры» управляет списками людей</h2>
+            <p class="lead">Обычно лист скрыт, чтобы его случайно не повредили. Это единый источник логинов для всей таблицы.</p>
+            <div class="grid-2">
+              <article class="card"><div class="icon">+</div><h3>Добавление</h3><p>Новый корректный логин из справочника каскадно появится в шторках активных рабочих листов и в списке «Нарушителей».</p></article>
+              <article class="card"><div class="icon">−</div><h3>Удаление</h3><p>Удалённый логин исчезнет из вариантов выбора. Уже записанные исторические ячейки скрипт самовольно не стирает.</p></article>
+            </div>
+            <div class="callout"><div class="callout-symbol">+</div><div><strong>Новые столбцы добавлять можно</strong><p>Скрипт ищет нужные данные по точным названиям заголовков, а не по буквам колонок. Новый столбец можно вставить до, после или между существующими, если он остаётся внутри соответствующей нативной таблицы Google Sheets.</p></div></div>
+            <div class="callout danger"><div class="callout-symbol">!</div><div><strong>Служебные заголовки нужно сохранить</strong><p>Нельзя переименовывать или дублировать «Дата», «ВАТС», «Телеоператор», «Logviewer» и «Дата проверки лога», переносить строку заголовков или выносить служебный столбец за границы нативной таблицы. Логины заполняются без дублей; после массовых изменений проверь рабочие шторки.</p></div></div>
+          </section>
+
+          <section id="user-faq" class="section" data-nav-title="Если что-то пошло не так">
+            <div class="eyebrow">Быстрая помощь</div>
+            <h2>Частые вопросы</h2>
+            <details><summary>Не появилось меню NAVIO</summary><p>Полностью перезагрузи вкладку с таблицей. Если меню всё ещё нет, открой «Расширения → Apps Script» и обратись к разработчику.</p></details>
+            <details><summary>Не появилась ссылка «Добавить лог»</summary><p>Проверь, что в строке есть корректная дата события и ВАТС. Затем измени любую ячейку этой строки. Если не помогло — сообщи разработчику лист и номер строки.</p></details>
+            <details><summary>После изменения справочника нет нового логина</summary><p>Немного подожди: таблице нужно время на обновление — обычно до 10–20 секунд. Если логин так и не появился, запусти «NAVIO → Установить или обновить проект». Не добавляй логин вручную в каждый рабочий лист.</p></details>
+            <details><summary>Ошибка уже исправлена, но осталась в «Нарушителях»</summary><p>Обычно строка исчезает спустя 20–30 секунд после изменения. Для контрольной проверки или если таблица так и не обновилась запусти «NAVIO → Полный пересчёт нарушителей» и дождись завершения.</p></details>
+          </section>
+        </div>
+
+        <div id="developerDoc" class="doc-view" data-doc="developer">
+          <section id="dev-roadmap" class="section yellow" data-nav-title="Как выбрать путь">
+            <div class="eyebrow">Точка входа</div>
+            <h2>Выбери способ сопровождения проекта</h2>
+            <p class="lead">Это bound-проект Google Apps Script на JavaScript V8. Он обслуживает рабочие строки, синхронизирует нативные dropdown-столбцы и строит обратимый отчёт по просроченным логам.</p>
+            <div class="audience-choice">
+              <article class="card"><strong>Работаешь через обычный ИИ-чат?</strong><p>Открой блок «Для ИИ», выбери нужный промпт и скопируй или скачай его. Модель будет вести тебя по интерфейсу Apps Script пошагово.</p></article>
+              <article class="card"><strong>Уверенно работаешь с JavaScript и HTML?</strong><p>Переходи к «Продвинутым разработчикам»: там архитектура, триггеры, данные, квоты, тесты и открытый GitHub-репозиторий.</p></article>
+            </div>
+          </section>
+
+          <section id="dev-ai" class="section dark" data-nav-title="Для ИИ">
+            <div class="eyebrow">Сопровождение без опыта разработки</div>
+            <h2>Два промпта для обычной чат-модели</h2>
+            <p class="lead">Не нужно читать их целиком. Выбери задачу, нажми «Копировать» или «Скачать TXT», отправь промпт нейронке и дальше выполняй её инструкции.</p>
+            <div class="callout"><div class="callout-symbol">1</div><div><strong>Не отправляй сразу весь проект</strong><p>Промпт сам попросит конкретные файлы, скриншоты и названия листов. Так модель получит только нужный контекст и не перепутает версии.</p></div></div>
+
+            <div class="prompt-list">
+              <details class="prompt-card">
+                <summary>Промпт: изменить HTML-документацию</summary>
+                <div class="prompt-body" data-prompt-card="html">
+                  <p class="prompt-description">Только интерфейс и тексты HTML. Не разрешает модели вмешиваться в серверную логику таблицы.</p>
+                  <div class="prompt-toolbar">
+                    <button class="prompt-button primary" type="button" data-prompt-action="copy">Копировать</button>
+                    <button class="prompt-button" type="button" data-prompt-action="download">Скачать TXT</button>
+                    <button class="prompt-button" type="button" data-prompt-action="edit">Редактировать промпт</button>
+                    <button class="prompt-button danger" type="button" data-prompt-action="reset">Вернуть встроенный</button>
+                  </div>
+                  <textarea class="prompt-text" readonly spellcheck="false">Ты — технический помощник человека, который поддерживает встроенную HTML-документацию проекта NAVIO в Google Apps Script через обычный чат с ИИ. Пользователь может не знать JavaScript, HTML, CSS, Apps Script, Git и командную строку. Веди его до завершённого результата короткими пошаговыми действиями: что открыть, куда нажать, какой файл скопировать, что прислать тебе, какой код заменить и как проверить результат. Не лей воду, не показывай скрытые рассуждения и не заканчивай работу общими советами.
+
+ГРАНИЦЫ ЗАДАЧИ
+Работай только с HTML-интерфейсами проекта: в первую очередь DocumentationDialog.html, при необходимости SheetTrackingDialog.html. Не меняй .gs-файлы, appsscript.json, триггеры, алгоритмы дат, Logviewer, справочники или «Нарушителей». Если запрос требует серверной функции или изменения бизнес-логики, прямо скажи, что для этого нужен отдельный backend-промпт, и остановись до его получения.
+
+КОНТЕКСТ HTML-ДОКУМЕНТАЦИИ
+DocumentationDialog.html содержит два режима в одном файле: «Для пользователя» и «Для разработчика». Режим передаётся сервером и записывается в data-mode. Интерфейс выполнен в стиле Navio: чёрный #000000, белый #ffffff, жёлтый #faed00, серый #f4f4f4, крупная типографика, скруглённые карточки и фотография техники. Внутри есть боковое содержание, активный пункт по контрольной линии первой трети экрана, поиск только в версии для разработчика, раскрывающиеся details, индикатор чтения, кнопка наверх, копирование текста, скачивание TXT и редактирование ИИ-промптов. Не подключай тяжёлые внешние библиотеки без явной необходимости.
+
+ПОРЯДОК РАБОТЫ
+1. Сначала попроси пользователя открыть нужную таблицу и перейти «Расширения → Apps Script».
+2. Попроси открыть HTML-файл, связанный с запросом, скопировать его полностью и прислать в чат текстовым файлом или несколькими сообщениями. Если нужен визуальный разбор, отдельно попроси скрин проблемного состояния и размер окна.
+3. До правки кратко перечисли, что понял, и укажи точные блоки HTML/CSS/JS, которые затронешь.
+4. Сохраняй существующий фирменный стиль, адаптивность, доступность, пользовательский и разработческий режимы. Не удаляй рабочие возможности, которых не касался запрос.
+5. Верни либо полный готовый HTML-файл, либо предельно точные замены «найди этот фрагмент → замени на этот». Для неопытного пользователя предпочтителен полный файл.
+6. Объясни: открыть нужный HTML-файл в Apps Script, выделить весь старый код, вставить новый, сохранить проект, вернуться в таблицу, перезагрузить страницу и заново открыть документацию через NAVIO.
+7. Проведи проверку вместе с пользователем: правильный раздел, содержание, прокрутка, мобильная ширина, кнопки, тексты и отсутствие ошибок. При проблеме запроси скрин и исправляй дальше, не объявляя задачу завершённой заранее.
+
+АКТУАЛЬНОСТЬ ДОКУМЕНТАЦИИ
+Если пользователь добавляет новые функции, меняет поведение таблицы или считает изменение важным, обязательно проверь, нужно ли обновить раздел «Для пользователя». Пользовательская справка должна быть короткой и описывать наблюдаемое поведение без лишних внутренних деталей. Техническая справка должна отражать актуальные HTML-возможности и ограничения.
+
+САМООБНОВЛЕНИЕ ЭТОГО ПРОМПТА
+В конце успешной работы обязательно сформируй отдельным блоком полную обновлённую версию этого промпта. Сохрани его назначение, границы только для HTML и пошаговый стиль, но добавь новые сведения об изменённой структуре и возможностях. Настойчиво попроси пользователя открыть «NAVIO → Документация → Для разработчика → Для ИИ», нажать «Редактировать промпт» у HTML-промпта, заменить текст целиком и сохранить. Пока пользователь не подтвердил сохранение нового промпта, напомни, что документация сопровождения останется устаревшей.</textarea>
+                  <p class="prompt-status">Используется встроенная версия.</p>
+                </div>
+              </details>
+
+              <details class="prompt-card">
+                <summary>Промпт: изменить backend и функциональность</summary>
+                <div class="prompt-body" data-prompt-card="backend">
+                  <p class="prompt-description">Только серверные файлы Apps Script и манифест. HTML-код этим промптом не редактируется.</p>
+                  <div class="prompt-toolbar">
+                    <button class="prompt-button primary" type="button" data-prompt-action="copy">Копировать</button>
+                    <button class="prompt-button" type="button" data-prompt-action="download">Скачать TXT</button>
+                    <button class="prompt-button" type="button" data-prompt-action="edit">Редактировать промпт</button>
+                    <button class="prompt-button danger" type="button" data-prompt-action="reset">Вернуть встроенный</button>
+                  </div>
+                  <textarea class="prompt-text" readonly spellcheck="false">Ты — технический помощник человека, который поддерживает backend проекта NAVIO в Google Apps Script через обычный чат с ИИ. Пользователь может не знать JavaScript, Apps Script, API, Git, терминал и устройство проекта. Твоя задача — провести его от описания проблемы до работающей и проверенной правки через конкретные действия в интерфейсе Google Sheets и Apps Script. Пиши сухо и по делу: что нажать, какой файл открыть, что скопировать, куда вставить и что проверить. Не показывай скрытые рассуждения и не ограничивайся общими рекомендациями.
+
+ГРАНИЦЫ ЗАДАЧИ
+Работай только с серверной частью: .gs-файлы и при необходимости appsscript.json. Не редактируй DocumentationDialog.html или SheetTrackingDialog.html. Если изменение заметно пользователю, в конце обязательно скажи применить отдельный HTML-промпт для актуализации документации, но не смешивай HTML-код с backend-правкой.
+
+КОНТЕКСТ ПРОЕКТА
+Это связанный с Google-таблицей Apps Script на JavaScript V8. Рабочие листы задаются в APP_CONFIG_.workingSheets; сейчас базово используются «ПАО», «Такси» и «Шаттл», но состав может меняться. Служебные столбцы находятся по точным заголовкам «Дата», «ВАТС», «Телеоператор», «Logviewer» и «Дата проверки лога», а не по буквам колонок. Новые столбцы внутри нативной таблицы добавлять можно; служебные заголовки нельзя переименовывать, дублировать или выносить за границы таблицы.
+
+ФАЙЛЫ BACKEND
+Constants.gs — единая конфигурация. EntryPoints.gs — простые onOpen и onEdit без бизнес-логики. Setup.gs — меню, installProject и installable-триггеры. SheetTracking.gs — активные листы в Document Properties. LogCheckDate.gs — автозаполнение контрольной даты и «Сегодня». Logviewer.gs — «Добавить лог», распознавание /logs/ и динамический «заполнен». Teleoperators.gs и Vehicles.gs — справочники. DropdownSync.gs — нативные dropdown через Sheets API v4. Violators.gs — инкрементальный и полный обратимый отчёт. Formatting.gs — принадлежащее проекту форматирование. SheetsApi.gs — авторизованный HTTP-клиент. Utils.gs — общие чистые функции. Documentation.gs — серверное открытие справки и хранение пользовательских версий ИИ-промптов. appsscript.json — V8, сервисы и OAuth scopes.
+
+КРИТИЧЕСКОЕ ПОВЕДЕНИЕ
+onEdit обрабатывает строку в порядке: контрольная дата → Logviewer → нарушения. Дата события один раз копируется в «Дата проверки лога»; «Сегодня» становится фиксированной датой. Настоящая /logs/-ссылка ставит «заполнен», удаление возвращает дату события. Нарушение появляется на пятый день без актуализации, только в пределах 30 дней, и исчезает после исправления. Полный проход раз в 10 минут читает границы нативных таблиц; ручной edit пересчитывает только затронутые строки. Отключённый через NAVIO лист не сканируется; хотя бы один лист должен оставаться активным. Справочники полностью заменяют варианты dropdown, поэтому поддерживают каскадное добавление и удаление. Массовые записи защищены DocumentLock.
+
+ПОРЯДОК РАБОТЫ С ПОЛЬЗОВАТЕЛЕМ
+1. Уточни таблицу, лист, строку, ожидаемое и фактическое поведение. Попроси скрин ошибки и журнал выполнения, если они есть.
+2. Скажи открыть «Расширения → Apps Script». По описанию выбери минимальный набор файлов и попроси прислать полный текущий код каждого из них. Никогда не придумывай содержимое отсутствующего файла.
+3. Проверь связи вызывающих и вызываемых функций, конфигурацию, заголовки, триггеры и scopes. Объясни причину одной короткой фразой.
+4. Подготовь согласованную правку. Для неопытного пользователя отдавай полный код каждого изменённого файла отдельно и явно подписывай имя файла. Не используй сокращения вроде «остальное без изменений», если пользователь будет заменять файл целиком.
+5. Веди по установке: открыть файл, заменить весь код, сохранить. Если появился новый файл — нажать плюс, выбрать тип, назвать его точно и вставить код. Если менялся манифест — включить его отображение в настройках проекта.
+6. Если менялись scopes, триггеры, интервалы, dropdown-логика или это первая установка, попроси выбрать installProject в редакторе, нажать «Выполнить» и подтвердить разрешения. Для обычной правки функции не требуй лишнюю переустановку.
+7. Дай безопасный тест на копии таблицы: точные лист, строка, значения, ожидаемый результат и способ отката тестовых данных. Попроси результат или скрин. Продолжай до подтверждённого успеха.
+8. Не советуй публиковать на основной таблице до проверки на тестовой и резервной копии. После теста дай отдельную короткую инструкцию переноса.
+
+ОГРАНИЧЕНИЯ И БЕЗОПАСНОСТЬ
+Apps Script имеет лимит одного обычного запуска 6 минут; простой onEdit должен быть быстрым. Читай и записывай диапазоны пакетно, не сканируй весь размер листа без необходимости. Не удаляй чужие триггеры и форматирование. Не предлагай reset, массовое удаление или перезапись реальных данных без явного подтверждения. Для Sheets API используются scopes spreadsheets, script.external_request, script.scriptapp и script.container.ui; после изменения scopes нужна повторная авторизация.
+
+ДОКУМЕНТАЦИЯ И САМООБНОВЛЕНИЕ
+Если добавлена функция, изменилось видимое поведение или пользователь считает правку важной, в конце явно скажи: «Теперь нужно обновить раздел “Для пользователя” отдельным HTML-промптом». Сам HTML не меняй.
+
+После успешной backend-работы обязательно сформируй отдельным блоком полную обновлённую версию этого backend-промпта. Сохрани пошаговый стиль, границы без HTML и все актуальные гарантии, но внеси новую архитектуру, файлы, функции, настройки и проверки. Настойчиво попроси пользователя открыть «NAVIO → Документация → Для разработчика → Для ИИ», нажать «Редактировать промпт» у backend-промпта, заменить текст целиком и сохранить. Пока пользователь не подтвердил сохранение, напомни, что следующая нейронка получит устаревший контекст.</textarea>
+                  <p class="prompt-status">Используется встроенная версия.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section id="dev-advanced" class="section yellow" data-nav-title="Продвинутым разработчикам">
+            <div class="eyebrow">Полная техническая карта</div>
+            <h2>Дальше — для тех, кто работает с кодом напрямую</h2>
+            <p class="lead">Ниже описаны стек, глобальное пространство Apps Script, модули, события, хранение состояния, квоты, диагностика и безопасная публикация. Этот путь подходит разработчикам, которые готовы читать JavaScript и самостоятельно проверять изменения.</p>
+          </section>
+
+          <section id="dev-stack" class="section dark" data-nav-title="Технологии">
+            <div class="eyebrow">Стек</div>
+            <h2>Минимум зависимостей, максимум нативных возможностей</h2>
+            <div class="grid-3">
+              <article class="card"><div class="icon">JS</div><h3>Apps Script V8</h3><p>Серверный JavaScript в общем глобальном пространстве. ES-модулей <code>import/export</code> в проекте нет.</p></article>
+              <article class="card"><div class="icon">G</div><h3>Spreadsheet service</h3><p>Чтение диапазонов, форматирование, UI, триггеры и работа со связанным документом.</p></article>
+              <article class="card"><div class="icon">API</div><h3>Sheets API v4</h3><p>Метаданные нативных таблиц и <code>updateTable</code> для встроенных dropdown-столбцов.</p></article>
+              <article class="card"><div class="icon">UI</div><h3>HtmlService</h3><p>Модальные интерфейсы управления листами и встроенной документации: HTML, CSS и клиентский JS.</p></article>
+              <article class="card"><div class="icon">↕</div><h3>clasp</h3><p>Связывает локальный каталог с удалённым Script ID и переносит код в обе стороны.</p></article>
+              <article class="card"><div class="icon">✓</div><h3>Node + ESLint</h3><p>Локальная проверка структуры, статический анализ и smoke-тесты чистой логики через Node VM.</p></article>
+            </div>
+          </section>
+
+          <section id="dev-architecture" class="section" data-nav-title="Архитектура файлов">
+            <div class="eyebrow">Модули</div>
+            <h2>Каждый файл отвечает за один слой</h2>
+            <p class="lead">Физическое разделение нужно для поддержки, но при выполнении Apps Script объединяет все <code>.gs</code> в одно глобальное пространство.</p>
+            <div class="file-grid">
+              <article class="file"><span class="file-name">Constants.gs</span><p>Единая конфигурация проекта. Новые служебные значения добавляй сюда.</p></article>
+              <article class="file"><span class="file-name">EntryPoints.gs</span><p>Только <code>onOpen</code>, <code>onEdit</code> и порядок передачи событий.</p></article>
+              <article class="file"><span class="file-name">Setup.gs</span><p>Меню, установка и удаление installable-триггеров, первичная синхронизация.</p></article>
+              <article class="file"><span class="file-name">SheetTracking.gs</span><p>Список активных листов, Document Properties и синхронизация после включения.</p></article>
+              <article class="file"><span class="file-name">LogCheckDate.gs</span><p>Автозаполнение контрольной даты, исправление даты и команда «Сегодня».</p></article>
+              <article class="file"><span class="file-name">Logviewer.gs</span><p>Служебные ссылки, распознавание настоящих логов и динамический статус.</p></article>
+              <article class="file"><span class="file-name">Violators.gs</span><p>Инкрементальный и полный пересчёт, адреса ошибок и метрики производительности.</p></article>
+              <article class="file"><span class="file-name">Teleoperators.gs</span><p>Валидация логинов и каскадная синхронизация шторок.</p></article>
+              <article class="file"><span class="file-name">Vehicles.gs</span><p>Активные ВАТС, статусы, шторки и ручная миграция старых значений.</p></article>
+              <article class="file"><span class="file-name">DropdownSync.gs</span><p>Универсальная сборка запросов обновления нативных dropdown-столбцов.</p></article>
+              <article class="file"><span class="file-name">SheetsApi.gs</span><p>Узкий HTTP-клиент к Sheets API v4 с OAuth-токеном Apps Script.</p></article>
+              <article class="file"><span class="file-name">Formatting.gs</span><p>Одно принадлежащее проекту зелёное правило для статуса «заполнен».</p></article>
+              <article class="file"><span class="file-name">Utils.gs</span><p>Нормализация, даты, заголовки, диапазоны, ВАТС и стабильные хеши.</p></article>
+              <article class="file"><span class="file-name">Documentation.*</span><p>Серверные точки открытия, единый HTML-интерфейс двух справок и хранение пользовательских версий ИИ-промптов.</p></article>
+              <article class="file"><span class="file-name">appsscript.json</span><p>V8, часовой пояс, расширенный Sheets service и OAuth scopes.</p></article>
+              <article class="file"><span class="file-name">tests / scripts</span><p>Локальные smoke-тесты и контроль глобальных имён и состава проекта.</p></article>
+            </div>
+          </section>
+
+          <section id="dev-events" class="section" data-nav-title="События и триггеры">
+            <div class="eyebrow">Исполнение</div>
+            <h2>Четыре типа запуска</h2>
+            <div class="table-wrap"><table><thead><tr><th>Запуск</th><th>Что делает</th><th>Почему так</th></tr></thead><tbody>
+              <tr><td><code>onOpen</code></td><td>Добавляет меню NAVIO и восстанавливает служебное форматирование.</td><td>Не выполняет полный проход при каждом открытии.</td></tr>
+              <tr><td><code>onEdit</code></td><td>Дата события → контрольная дата → Logviewer → конкретные адреса нарушений.</td><td>Порядок важен: отчёт должен видеть уже итоговое состояние строки.</td></tr>
+              <tr><td>Installable edit/change</td><td>Следит за справочниками и структурными изменениями, восстанавливает периодический триггер.</td><td>Может выполнять действия, которым нужна авторизация.</td></tr>
+              <tr><td>Каждые 10 минут</td><td>Полностью сверяет активные рабочие таблицы и пересобирает «Нарушителей».</td><td>Страхует от пропущенных событий и внешних массовых изменений.</td></tr>
+            </tbody></table></div>
+            <div class="callout"><div class="callout-symbol">!</div><div><strong>Не переноси тяжёлую работу в простой onEdit</strong><p>У простого триггера жёсткие ограничения по времени и авторизации. Массовые операции должны оставаться в installable-триггерах или ручных командах.</p></div></div>
+          </section>
+
+          <section id="dev-data-flow" class="section yellow" data-nav-title="Поток данных">
+            <div class="eyebrow">Критичный сценарий</div>
+            <h2>Одна строка проходит через несколько независимых правил</h2>
+            <ul class="clean-list">
+              <li><b>1</b><span><strong>Дата события.</strong> Новое значение инициализирует контрольную дату. Одиночное исправление переносится только пока пользователь её отдельно не актуализировал.</span></li>
+              <li><b>2</b><span><strong>Logviewer.</strong> По дате и нормализованному ВАТС строится формула <code>HYPERLINK</code> с подписью «Добавить лог».</span></li>
+              <li><b>3</b><span><strong>Настоящий лог.</strong> Ссылка с путём <code>/logs/</code> переводит контрольную ячейку в «заполнен». Удаление возвращает дату события.</span></li>
+              <li><b>4</b><span><strong>Нарушение.</strong> На пятый день без актуализации адрес добавляется телеоператору; после исправления удаляется.</span></li>
+            </ul>
+            <div class="code-block" data-copy>edit → handleLogCheckDateEdit_()
+     → handleLogviewerEdit_()
+     → handleViolatorsEdit_()<button class="copy-button" type="button" aria-label="Копировать">⧉</button></div>
+          </section>
+
+          <section id="dev-violators" class="section dark" data-nav-title="Алгоритм нарушителей">
+            <div class="eyebrow">Производительность</div>
+            <h2>Быстрый edit плюс контрольный полный проход</h2>
+            <div class="grid-2">
+              <article class="card"><h3>Инкрементальный режим</h3><p>Получает только изменённые строки, пересчитывает их адреса и точечно обновляет готовый отчёт. Это основной путь при ручной работе.</p></article>
+              <article class="card"><h3>Полный режим</h3><p>Раз в 10 минут получает метаданные нативных таблиц один раз и читает реальные границы таблиц, а не весь размер листа.</p></article>
+              <article class="card"><h3>Условия</h3><p>Нарушение существует после четырёх полных дней, только в окне последних 30 дней и только без статуса «заполнен».</p></article>
+              <article class="card"><h3>Обратимость</h3><p>Снимок полностью выводится из текущих данных. Исправленный адрес удаляется, пустые хвосты отчёта очищаются.</p></article>
+            </div>
+            <div class="pill-row"><span class="pill yellow">rowsScanned</span><span class="pill yellow">durationMs</span><span class="pill yellow">sheetsScanned</span><span class="pill yellow">staleRows</span></div>
+          </section>
+
+          <section id="dev-references" class="section" data-nav-title="Справочники и dropdown">
+            <div class="eyebrow">Google Sheets tables</div>
+            <h2>Шторки обновляются через Sheets API</h2>
+            <p class="lead">Spreadsheet service не даёт достаточно удобного управления нативными table-column dropdown. Поэтому проект читает метаданные таблиц и отправляет точечные <code>updateTable</code>.</p>
+            <div class="grid-2">
+              <article class="card"><h3>Телеоператоры</h3><p>Логины читаются из скрытого справочника, нормализуются, проверяются на дубли и хешируются. Полная замена вариантов поддерживает и добавление, и каскадное удаление.</p></article>
+              <article class="card"><h3>ВАТС</h3><p>В шторки попадают только номера со статусом <code>Active</code>. Неизвестный статус и пустой номер активной записи считаются ошибкой данных.</p></article>
+            </div>
+            <div class="callout danger"><div class="callout-symbol">!</div><div><strong>Заголовок должен находиться ровно один раз</strong><p>Код намеренно падает с понятной ошибкой, если лист, нативная таблица или целевой столбец неоднозначны. Не ослабляй эту проверку ради «быстрого фикса».</p></div></div>
+          </section>
+
+          <section id="dev-tracking" class="section" data-nav-title="Активные листы">
+            <div class="eyebrow">Состояние проекта</div>
+            <h2>Пауза листа хранится в Document Properties</h2>
+            <p class="lead">Ключ <code>active_working_sheets_v1</code> содержит JSON-массив активных листов. При отсутствии свойства безопасный дефолт — все листы из <code>APP_CONFIG_.workingSheets</code>.</p>
+            <ul class="clean-list">
+              <li><b>1</b><span>В рамках одного выполнения список кэшируется в <code>ACTIVE_WORKING_SHEETS_CACHE_</code>.</span></li>
+              <li><b>2</b><span>Любой профильный обработчик сначала проверяет <code>isWorkingSheetTracked_()</code> и быстро выходит.</span></li>
+              <li><b>3</b><span>После выключения полный снимок нарушений сразу очищает адреса листа.</span></li>
+              <li><b>4</b><span>После включения запускается восстановление dropdown, дат, форматирования и ссылок.</span></li>
+            </ul>
+          </section>
+
+          <section id="dev-state" class="section" data-nav-title="Properties и блокировки">
+            <div class="eyebrow">Служебное состояние</div>
+            <h2>Храним только то, что ускоряет или восстанавливает работу</h2>
+            <div class="table-wrap"><table><thead><tr><th>Ключ</th><th>Хранилище</th><th>Назначение</th></tr></thead><tbody>
+              <tr><td><code>bound_spreadsheet_id_v1</code></td><td>Script</td><td>Открытие таблицы из фонового запуска без active UI.</td></tr>
+              <tr><td><code>active_working_sheets_v1</code></td><td>Document</td><td>Список рабочих листов, не поставленных на паузу.</td></tr>
+              <tr><td><code>documentation_prompt_html_v1_*</code></td><td>Document</td><td>Пользовательская версия HTML-промпта, разбитая на части.</td></tr>
+              <tr><td><code>documentation_prompt_backend_v1_*</code></td><td>Document</td><td>Пользовательская версия backend-промпта, разбитая на части.</td></tr>
+              <tr><td><code>teleoperators_sync_hash_v2</code></td><td>Document</td><td>Пропуск записи dropdown, если справочник не изменился.</td></tr>
+              <tr><td><code>vehicles_sync_hash_v1</code></td><td>Document</td><td>То же для списка активных ВАТС.</td></tr>
+              <tr><td><code>violators_last_full_sync_v1</code></td><td>Document</td><td>Последняя метрика полного прохода.</td></tr>
+            </tbody></table></div>
+            <div class="callout"><div class="callout-symbol">🔒</div><div><strong>Массовые записи защищены DocumentLock</strong><p>Если другой запуск уже работает, функция может вернуть <code>{updated:false, reason:"locked"}</code>. Это штатная защита от гонки; следующий запуск попробует снова.</p></div></div>
+          </section>
+
+          <section id="dev-quotas" class="section yellow" data-nav-title="Квоты и скорость">
+            <div class="eyebrow">Эксплуатация</div>
+            <h2>Главный ресурс — время триггеров</h2>
+            <div class="grid-3">
+              <article class="card"><h3>6 минут</h3><p>Предельное время одного обычного выполнения Apps Script. Полный проход должен укладываться с запасом.</p></article>
+              <article class="card"><h3>10 минут</h3><p>Текущий интервал контрольного пересчёта. Он создаётся в <code>installProject()</code>.</p></article>
+              <article class="card"><h3>30 секунд</h3><p>Практический потолок простого <code>onEdit</code>. Поэтому он работает только с затронутыми строками.</p></article>
+            </div>
+            <div class="callout"><div class="callout-symbol">↗</div><div><strong>При росте сначала смотри метрики</strong><p>Проверь <code>durationMs</code>, <code>rowsScanned</code>, очередь выполнений и ошибки квот. Не добавляй <code>sleep</code>; безопаснее увеличить интервал полного прохода и сохранить быстрый edit.</p></div></div>
+            <details><summary>Ориентиры по квотам</summary><div class="table-wrap"><table><thead><tr><th>Ресурс</th><th>Consumer</th><th>Workspace</th></tr></thead><tbody><tr><td>Время installable-триггеров</td><td>90 мин/сутки</td><td>6 ч/сутки</td></tr><tr><td>URL Fetch</td><td>20 000/сутки</td><td>100 000/сутки</td></tr><tr><td>Properties read/write</td><td>50 000/сутки</td><td>500 000/сутки</td></tr><tr><td>Один запуск</td><td>6 минут</td><td>6 минут</td></tr></tbody></table></div><p>Sheets API отдельно разрешает 300 чтений и 300 записей в минуту на проект, но не более 60 каждого типа в минуту на пользователя в проекте. Поминутная квота пополняется каждую минуту, дневные Apps Script-квоты — через 24 часа после первого запроса. Google может менять лимиты без предупреждения: сверяй <a href="https://developers.google.com/apps-script/guides/services/quotas" target="_blank" rel="noopener">Apps Script quotas</a> и <a href="https://developers.google.com/workspace/sheets/api/limits" target="_blank" rel="noopener">Sheets API limits</a>.</p></details>
+          </section>
+
+          <section id="dev-security" class="section" data-nav-title="Разрешения и безопасность">
+            <div class="eyebrow">OAuth</div>
+            <h2>Scopes заданы явно в манифесте</h2>
+            <div class="code-block" data-copy>https://www.googleapis.com/auth/spreadsheets
+https://www.googleapis.com/auth/script.container.ui
+https://www.googleapis.com/auth/script.external_request
+https://www.googleapis.com/auth/script.scriptapp<button class="copy-button" type="button" aria-label="Копировать">⧉</button></div>
+            <div class="grid-2">
+              <article class="card"><h3>Почему широкий Sheets scope</h3><p>Нативные таблицы и Sheets API требуют полного scope. Код при этом работает только со связанной таблицей и её сохранённым ID.</p></article>
+              <article class="card"><h3>После изменения scopes</h3><p>Нужно заново загрузить манифест и один раз повторно авторизовать <code>installProject()</code>.</p></article>
+            </div>
+          </section>
+
+          <section id="dev-local" class="section dark" data-nav-title="Локальная разработка">
+            <div class="eyebrow">Рабочий цикл</div>
+            <h2>Локальный код — источник изменений</h2>
+            <p class="lead"><code>clasp</code> переносит файлы между локальным каталогом и Apps Script. Script ID выбирает цель; поэтому перед каждой отправкой его проверяют глазами.</p>
+            <div class="code-block" data-copy>npm install
+npm run check
+npm run status
+npm run push<button class="copy-button" type="button" aria-label="Копировать">⧉</button></div>
+            <ul class="clean-list">
+              <li><b>1</b><span>Перед изменением сохрани текущую удалённую версию в резервную папку.</span></li>
+              <li><b>2</b><span>Вноси правку локально и одновременно обновляй README и эту HTML-документацию.</span></li>
+              <li><b>3</b><span>Запусти полный <code>npm run check</code>: структура, ESLint и smoke.</span></li>
+              <li><b>4</b><span>Сначала публикуй на тест. Основу обновляй только после подтверждённой проверки.</span></li>
+              <li><b>5</b><span>После работы верни локальный Script ID на тестовую цель.</span></li>
+            </ul>
+          </section>
+
+          <section id="dev-deploy" class="section" data-nav-title="Установка и публикация">
+            <div class="eyebrow">Runbook</div>
+            <h2>Когда нужен installProject</h2>
+            <p class="lead">Простая загрузка кода обновляет функции сразу. Переустановка нужна после изменения триггеров, интервала, scopes, dropdown-логики или при первом подключении проекта.</p>
+            <div class="grid-2">
+              <article class="card"><h3>Что делает установка</h3><ul><li>Сохраняет ID связанной таблицы.</li><li>Удаляет только собственные старые триггеры.</li><li>Синхронизирует активные листы и справочники.</li><li>Создаёт edit, change и десятиминутный таймер.</li></ul></article>
+              <article class="card"><h3>Безопасная публикация</h3><ul><li>Проверить Script ID и tracked files.</li><li>Сделать резервную копию.</li><li>Отправить на тест.</li><li>Авторизовать и проверить сценарии.</li><li>Только затем повторить на основе.</li></ul></article>
+            </div>
+          </section>
+
+          <section id="dev-debug" class="section" data-nav-title="Диагностика">
+            <div class="eyebrow">Типовые сбои</div>
+            <h2>Сначала структура и журнал, потом гипотезы</h2>
+            <details><summary>403 insufficient authentication scopes</summary><p>Сверь <code>oauthScopes</code> в <code>appsscript.json</code>, отправь манифест и повторно авторизуй <code>installProject()</code>. Для модальных окон нужен <code>script.container.ui</code>.</p></details>
+            <details><summary>Не найден лист или столбец</summary><p>Проверь точное имя, регистр, строку заголовков и отсутствие дублей. Код намеренно не угадывает неоднозначную структуру.</p></details>
+            <details><summary>Service Spreadsheets timed out</summary><p>Не запускай повторно много раз подряд. Проверь параллельные выполнения, размер диапазона и необходимость массовых операций. Основные сканы должны идти по границам нативной таблицы.</p></details>
+            <details><summary>Постоянный locked</summary><p>Один или несколько запусков конкурируют за DocumentLock. Проверь журнал «Выполнения», зависшие задачи и частоту структурных изменений.</p></details>
+            <details><summary>Меню или HTML-окно не обновилось</summary><p>Перезагрузи таблицу для нового <code>onOpen</code>. Если менялись scopes — повторно авторизуй проект.</p></details>
+          </section>
+
+          <section id="dev-change" class="section yellow" data-nav-title="Как безопасно расширять">
+            <div class="eyebrow">Чек-лист изменения</div>
+            <h2>Оставь проект понятнее, чем он был до тебя</h2>
+            <ul class="clean-list">
+              <li><b>1</b><span>Новую константу добавь в <code>APP_CONFIG_</code>, а доменную логику — в профильный файл.</span></li>
+              <li><b>2</b><span>Внутренние функции заканчивай подчёркиванием; не создавай дубли глобальных имён.</span></li>
+              <li><b>3</b><span>Минимизируй вызовы Spreadsheet service: читай и записывай диапазоны пакетно.</span></li>
+              <li><b>4</b><span>Не удаляй чужие форматирования и триггеры; распознавай только принадлежащие проекту.</span></li>
+              <li><b>5</b><span>Добавь smoke-тест для чистой логики и сценарий ручной проверки для интеграции.</span></li>
+              <li><b>6</b><span>Обнови локальный README и оба раздела встроенной документации в той же правке.</span></li>
+            </ul>
+          </section>
+
+          <section id="dev-github" class="section dark" data-nav-title="GitHub">
+            <div class="eyebrow">Открытый репозиторий</div>
+            <h2>Путь для команды через GitHub</h2>
+            <p class="lead">Актуальный исходный код опубликован открыто: проект можно клонировать, форкать и дорабатывать в отдельной ветке. Изменение считается готовым только после локальных проверок и проверки на тестовой таблице.</p>
+            <div class="grid-2">
+              <article class="card"><h3>Адрес репозитория</h3><p><a href="https://github.com/SteellleR/NAVIO_sheet" target="_blank" rel="noopener">github.com/SteellleR/NAVIO_sheet</a><br>Открытая версия исходного проекта NAVIO.</p></article>
+              <article class="card"><h3>Основной процесс</h3><p>Fork → отдельная ветка → локальные проверки → pull request → проверка на тестовой таблице → перенос на основную.</p></article>
+            </div>
+            <div class="code-block" data-copy>git clone https://github.com/SteellleR/NAVIO_sheet.git
+git checkout -b feature/SHORT_CHANGE_NAME
+npm install
+npm run check<button class="copy-button" type="button" aria-label="Копировать">⧉</button></div>
+            <div class="callout"><div class="callout-symbol">!</div><div><strong>Script ID не должен попадать в публичный репозиторий</strong><p>Локальный <code>.clasp.json</code> привязан к конкретному Apps Script. В репозитории хранится только безопасный пример без реальных идентификаторов; каждый разработчик создаёт свою локальную привязку.</p></div></div>
+          </section>
+        </div>
+
+        <div id="emptySearch" class="empty-search">
+          <strong>Ничего не нашлось</strong>
+          Попробуй более короткий запрос или другое слово.
+        </div>
+      </main>
+    </div>
+
+    <button id="backTop" class="back-top" type="button" aria-label="Наверх">↑</button>
+
+    <script>
+      (function() {
+        const requestedMode = new URLSearchParams(window.location.search).get("mode");
+        const templateMode = document.body.dataset.mode;
+        const mode = requestedMode === "developer" || templateMode === "developer"
+          ? "developer"
+          : "user";
+        document.body.dataset.mode = mode;
+
+        const isDeveloper = mode === "developer";
+        document.getElementById("modeLabel").textContent = isDeveloper
+          ? "Для разработчика"
+          : "Для пользователя";
+        document.getElementById("heroTitle").innerHTML = isDeveloper
+          ? "Как устроен<br>проект <span>→</span>"
+          : "Как работать<br>с таблицей <span>→</span>";
+        document.getElementById("heroCopy").textContent = isDeveloper
+          ? "Два пути сопровождения: пошаговая работа через обычный ИИ-чат и полная техническая карта для разработчика."
+          : "Коротко о рабочих листах, датах, Logviewer, нарушениях и настройках, которыми можно управлять без правки кода.";
+        document.getElementById("sidebarNote").textContent = isDeveloper
+          ? "Нет опыта — начни с блока «Для ИИ». Работаешь с кодом напрямую — переходи к технической карте."
+          : "Не нашёл ответ? Передай разработчику название листа, номер строки и скрин ошибки.";
+
+        const activeDoc = document.querySelector('[data-doc="' + mode + '"]');
+        const sections = Array.from(activeDoc.querySelectorAll(".section"));
+        const nav = document.getElementById("nav");
+        const search = document.getElementById("search");
+        const emptySearch = document.getElementById("emptySearch");
+        const progress = document.getElementById("progress");
+        const backTop = document.getElementById("backTop");
+
+        function setActiveNav(sectionId) {
+          nav.querySelectorAll("a").forEach(function(link) {
+            link.classList.toggle("active", link.dataset.target === sectionId);
+          });
+        }
+
+        sections.forEach(function(section) {
+          const link = document.createElement("a");
+          link.href = "#" + section.id;
+          link.textContent = section.dataset.navTitle;
+          link.dataset.target = section.id;
+          link.addEventListener("click", function() {
+            setActiveNav(section.id);
+          });
+          nav.appendChild(link);
+        });
+
+        search.addEventListener("input", function() {
+          const query = search.value.trim().toLowerCase();
+          let visible = 0;
+          sections.forEach(function(section) {
+            const matches = !query || section.textContent.toLowerCase().includes(query);
+            section.classList.toggle("hidden-by-search", !matches);
+            const link = nav.querySelector('[data-target="' + section.id + '"]');
+            if (link) link.style.display = matches ? "flex" : "none";
+            if (matches) visible++;
+          });
+          emptySearch.classList.toggle("visible", visible === 0);
+          updateActiveNav();
+        });
+
+        function updateActiveNav() {
+          const visibleSections = sections.filter(function(section) {
+            return !section.classList.contains("hidden-by-search");
+          });
+          if (!visibleSections.length) {
+            setActiveNav("");
+            return;
+          }
+
+          // Активен блок, который пересекает контрольную линию примерно в
+          // первой трети экрана. Следующий пункт не загорается, пока его карточка
+          // реально не дошла до этой линии.
+          const anchor = Math.min(window.innerHeight * 0.34, 320);
+          let current = visibleSections[0];
+          visibleSections.forEach(function(section) {
+            if (section.getBoundingClientRect().top <= anchor) current = section;
+          });
+
+          const atBottom = window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 4;
+          if (atBottom) current = visibleSections[visibleSections.length - 1];
+          setActiveNav(current.id);
+        }
+
+        function updateScrollUi() {
+          const height = document.documentElement.scrollHeight - window.innerHeight;
+          const percent = height > 0 ? (window.scrollY / height) * 100 : 0;
+          progress.style.width = Math.min(100, percent) + "%";
+          backTop.classList.toggle("visible", window.scrollY > 500);
+          updateActiveNav();
+        }
+        window.addEventListener("scroll", updateScrollUi, {passive: true});
+        updateScrollUi();
+
+        backTop.addEventListener("click", function() {
+          window.scrollTo({top: 0, behavior: "smooth"});
+        });
+
+        function copyText(text) {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            return navigator.clipboard.writeText(text);
+          }
+          const field = document.createElement("textarea");
+          field.value = text;
+          field.setAttribute("readonly", "");
+          field.style.position = "fixed";
+          field.style.opacity = "0";
+          document.body.appendChild(field);
+          field.select();
+          document.execCommand("copy");
+          field.remove();
+          return Promise.resolve();
+        }
+
+        document.querySelectorAll("[data-copy]").forEach(function(block) {
+          const button = block.querySelector(".copy-button");
+          button.addEventListener("click", function() {
+            const clone = block.cloneNode(true);
+            const cloneButton = clone.querySelector(".copy-button");
+            if (cloneButton) cloneButton.remove();
+            copyText(clone.textContent.trim()).then(function() {
+              button.textContent = "✓";
+              window.setTimeout(function() { button.textContent = "⧉"; }, 1200);
+            });
+          });
+        });
+
+        function setPromptStatus(card, message, type) {
+          const status = card.querySelector(".prompt-status");
+          status.textContent = message;
+          status.classList.toggle("success", type === "success");
+          status.classList.toggle("error", type === "error");
+        }
+
+        function setPromptBusy(card, busy) {
+          card.querySelectorAll(".prompt-button").forEach(function(button) {
+            button.disabled = busy;
+          });
+        }
+
+        function getServerRunner(card) {
+          if (!window.google || !google.script || !google.script.run) {
+            setPromptStatus(
+              card,
+              "Сохранение доступно только внутри Google Sheets.",
+              "error"
+            );
+            return null;
+          }
+          return google.script.run;
+        }
+
+        const promptCards = Array.from(
+          document.querySelectorAll("[data-prompt-card]")
+        );
+        const promptDefaults = {};
+
+        promptCards.forEach(function(card) {
+          const kind = card.dataset.promptCard;
+          const textarea = card.querySelector(".prompt-text");
+          const editButton = card.querySelector('[data-prompt-action="edit"]');
+          promptDefaults[kind] = textarea.value.trim();
+          card.querySelector(".prompt-status").setAttribute("aria-live", "polite");
+
+          card.querySelector('[data-prompt-action="copy"]').addEventListener(
+            "click",
+            function() {
+              copyText(textarea.value).then(function() {
+                setPromptStatus(card, "Промпт скопирован.", "success");
+              }).catch(function(error) {
+                setPromptStatus(card, "Не удалось скопировать: " + error.message, "error");
+              });
+            }
+          );
+
+          card.querySelector('[data-prompt-action="download"]').addEventListener(
+            "click",
+            function() {
+              const blob = new Blob([textarea.value], {type: "text/plain;charset=utf-8"});
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = kind === "html"
+                ? "navio-documentation-prompt.txt"
+                : "navio-backend-prompt.txt";
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              window.setTimeout(function() { URL.revokeObjectURL(url); }, 0);
+              setPromptStatus(card, "TXT-файл подготовлен.", "success");
+            }
+          );
+
+          editButton.addEventListener("click", function() {
+            if (textarea.readOnly) {
+              textarea.readOnly = false;
+              textarea.focus();
+              editButton.textContent = "Сохранить изменения";
+              setPromptStatus(card, "Отредактируй текст и нажми «Сохранить изменения».");
+              return;
+            }
+
+            const runner = getServerRunner(card);
+            if (!runner) return;
+            setPromptBusy(card, true);
+            setPromptStatus(card, "Сохраняю промпт…");
+            runner
+              .withSuccessHandler(function(result) {
+                textarea.value = result.prompt;
+                textarea.readOnly = true;
+                editButton.textContent = "Редактировать промпт";
+                setPromptBusy(card, false);
+                setPromptStatus(card, "Сохранена версия для этой таблицы.", "success");
+              })
+              .withFailureHandler(function(error) {
+                setPromptBusy(card, false);
+                setPromptStatus(card, "Не удалось сохранить: " + error.message, "error");
+              })
+              .saveDocumentationPrompt(kind, textarea.value);
+          });
+
+          card.querySelector('[data-prompt-action="reset"]').addEventListener(
+            "click",
+            function() {
+              if (!window.confirm("Вернуть встроенную версию этого промпта?")) return;
+              const runner = getServerRunner(card);
+              if (!runner) return;
+              setPromptBusy(card, true);
+              setPromptStatus(card, "Возвращаю встроенную версию…");
+              runner
+                .withSuccessHandler(function() {
+                  textarea.value = promptDefaults[kind];
+                  textarea.readOnly = true;
+                  editButton.textContent = "Редактировать промпт";
+                  setPromptBusy(card, false);
+                  setPromptStatus(card, "Используется встроенная версия.", "success");
+                })
+                .withFailureHandler(function(error) {
+                  setPromptBusy(card, false);
+                  setPromptStatus(card, "Не удалось вернуть: " + error.message, "error");
+                })
+                .resetDocumentationPrompt(kind);
+            }
+          );
+        });
+
+        if (isDeveloper && promptCards.length && window.google &&
+            google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(overrides) {
+              promptCards.forEach(function(card) {
+                const kind = card.dataset.promptCard;
+                if (overrides && overrides[kind]) {
+                  card.querySelector(".prompt-text").value = overrides[kind];
+                  setPromptStatus(card, "Загружена версия для этой таблицы.", "success");
+                }
+              });
+            })
+            .withFailureHandler(function(error) {
+              promptCards.forEach(function(card) {
+                setPromptStatus(card, "Не удалось загрузить сохранённую версию: " + error.message, "error");
+              });
+            })
+            .getDocumentationPromptOverrides();
+        }
+      })();
+    </script>
+  </body>
+</html>
