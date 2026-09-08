@@ -104,6 +104,21 @@ assert.match(
 );
 assert.match(
   documentationHtml,
+  /Скачать TXT[\s\S]*ограничение по длине сообщения/,
+  "developer-документация должна объяснять запасной путь для длинных промптов"
+);
+assert.match(
+  documentationHtml,
+  /ПОДРОБНАЯ КАРТА ФАЙЛОВ И ОТВЕТСТВЕННОСТИ[\s\S]*ЖИЗНЕННЫЙ ЦИКЛ СТРОКИ[\s\S]*PERFORMАNCE И КВОТЫ/,
+  "backend-промпт должен содержать самостоятельный технический контекст"
+);
+assert.match(
+  documentationHtml,
+  /Если изменение мелкое[\s\S]*Если backend-изменение несущественное/,
+  "оба промпта должны различать существенные и косметические изменения"
+);
+assert.match(
+  documentationHtml,
   /data-prompt-action="copy"[\s\S]*data-prompt-action="download"[\s\S]*data-prompt-action="edit"/,
   "ИИ-промпты должны поддерживать копирование, TXT и редактирование"
 );
