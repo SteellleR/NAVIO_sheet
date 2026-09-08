@@ -1,5 +1,5 @@
 /**
- * SheetsApi.gs — минимальный HTTP-клиент Google Sheets API v4.
+ * SheetsApi.gs - минимальный HTTP-клиент Google Sheets API v4.
  *
  * Получает метаданные нативных таблиц и отправляет пакетные updateTable-
  * запросы с OAuth-токеном текущего Apps Script. Ошибки API преобразуются в

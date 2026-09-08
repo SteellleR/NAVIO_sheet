@@ -157,7 +157,7 @@
             render(result.sheets);
             notice.textContent = result.changed
               ? "Готово. Настройка сохранена, отчёт обновлён."
-              : "Изменений нет — всё уже было настроено так.";
+              : "Изменений нет - всё уже было настроено так.";
           })
           .withFailureHandler(showError)
           .saveWorkingSheetTrackingState(active);

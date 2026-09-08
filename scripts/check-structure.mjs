@@ -1,5 +1,5 @@
 /**
- * check-structure.mjs — проверка состава модулей и глобального пространства.
+ * check-structure.mjs - проверка состава модулей и глобального пространства.
  * Контролирует обязательные файлы, заголовочные комментарии и дубли имён.
  */
 import fs from "node:fs";
@@ -26,6 +26,21 @@ const expectedFiles = [
 ];
 const sourceDirectory = path.resolve("src");
 const failures = [];
+const typographyFiles = [
+  "README.md",
+  "eslint.config.mjs",
+  "jsconfig.json",
+  "package.json",
+  "scripts/check-structure.mjs",
+  "tests/smoke.mjs"
+].concat(expectedFiles.map((fileName) => path.join("src", fileName)));
+
+for (const fileName of typographyFiles) {
+  const source = fs.readFileSync(path.resolve(fileName), "utf8");
+  if (/[\u2013\u2014]/u.test(source)) {
+    failures.push(`В ${fileName} найдено запрещённое длинное тире`);
+  }
+}
 
 for (const fileName of expectedFiles) {
   if (!fs.existsSync(path.join(sourceDirectory, fileName))) {

@@ -1,5 +1,5 @@
 /**
- * Documentation.gs — встроенная документация проекта.
+ * Documentation.gs - встроенная документация проекта.
  *
  * Открывает два режима HTML-справки из вложенного меню NAVIO: короткую
  * пользовательскую инструкцию и подробную техническую карту для разработчика.
@@ -49,7 +49,7 @@ function saveDocumentationPrompt(kind, prompt) {
   const value = String(prompt == null ? "" : prompt).trim();
   if (!value) throw new Error("Промпт не может быть пустым.");
   if (value.length > 40000) {
-    throw new Error("Промпт слишком большой. Максимум — 40 000 символов.");
+    throw new Error("Промпт слишком большой. Максимум - 40 000 символов.");
   }
 
   const prefix = getDocumentationPromptPrefix_(kind);

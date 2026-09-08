@@ -1,5 +1,5 @@
 /**
- * eslint.config.mjs — правила статического анализа локальных .gs-файлов.
+ * eslint.config.mjs - правила статического анализа локальных .gs-файлов.
  * Собирает глобальные объявления Apps Script и проверяет ошибки JavaScript.
  */
 import fs from "node:fs";
