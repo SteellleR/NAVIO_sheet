@@ -129,7 +129,7 @@ assert.match(
 );
 assert.match(
   documentationHtml,
-  /class="callout danger"[\s\S]*Разработку безопаснее вести на копии таблицы/,
+  /class="callout danger no-symbol"[\s\S]*Разработку безопаснее вести на копии таблицы/,
   "красное предупреждение должно требовать сначала тестировать на копии"
 );
 assert.match(
