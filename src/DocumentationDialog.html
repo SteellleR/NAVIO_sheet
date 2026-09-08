@@ -780,7 +780,7 @@ NAVIO Sheet - связанный с Google-таблицей проект Google 
 
 ТЕКУЩАЯ UI-МЕХАНИКА DOCUMENTATIONDIALOG.HTML
 - Верхняя часть содержит логотип NAVIO · OPERATIONS, режим справки и кнопку «Закрыть». Глобальной кнопки «Раскрыть всё» нет.
-- Боковое «Содержание» собирается динамически из section[data-nav-title]. Активен раздел, дошедший до контрольной линии примерно в первой трети окна. Не возвращай раннее переключение через неточный IntersectionObserver.
+- Боковое «Содержание» собирается динамически из section[data-nav-title]. Активен раздел, дошедший до контрольной линии примерно в первой трети окна. Клик отменяет стандартное действие ссылки и явно прокручивает iframe через window.scrollTo к выбранной секции. Не возвращай раннее переключение через неточный IntersectionObserver и не полагайся только на hash-переход внутри Apps Script.
 - Поиск существует только в developer-режиме, фильтрует секции и пункты содержания. Лупа - выровненный inline SVG, а не маленький текстовый символ.
 - Кнопка наверх появляется после прокрутки; верхний индикатор показывает прогресс чтения.
 - Обычные code-block поддерживают копирование. ИИ-промпты дополнительно скачиваются как UTF-8 TXT и могут сохраняться через google.script.run.
@@ -1213,8 +1213,15 @@ npm run check<button class="copy-button" type="button" aria-label="Копиро�
           link.href = "#" + section.id;
           link.textContent = section.dataset.navTitle;
           link.dataset.target = section.id;
-          link.addEventListener("click", function() {
+          link.addEventListener("click", function(event) {
+            event.preventDefault();
             setActiveNav(section.id);
+            const targetTop = window.scrollY +
+              section.getBoundingClientRect().top - 20;
+            window.scrollTo({
+              top: Math.max(0, targetTop),
+              behavior: "smooth"
+            });
           });
           nav.appendChild(link);
         });

@@ -99,6 +99,11 @@ assert.doesNotMatch(
 );
 assert.match(
   documentationHtml,
+  /link\.addEventListener\("click", function\(event\)[\s\S]*event\.preventDefault\(\)[\s\S]*window\.scrollTo/,
+  "пункты содержания должны явно прокручивать iframe к выбранному разделу"
+);
+assert.match(
+  documentationHtml,
   /data-prompt-card="html"[\s\S]*data-prompt-card="backend"/,
   "developer-документация должна содержать два раздельных ИИ-промпта"
 );
