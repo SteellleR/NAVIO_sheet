@@ -109,6 +109,31 @@ assert.match(
 );
 assert.match(
   documentationHtml,
+  /data-doc-target="dev-ai"[\s\S]*data-doc-target="dev-advanced"/,
+  "карточки выбора должны вести к двум разным маршрутам сопровождения"
+);
+assert.match(
+  documentationHtml,
+  /data-nav-group="Путь 01 - Работа с ИИ"[\s\S]*data-nav-group="Путь 02 - Прошаренный разработчик"/,
+  "содержание должно явно разделять ИИ- и технический маршруты"
+);
+assert.match(
+  documentationHtml,
+  /class="path-boundary"[\s\S]*На этом путь для работы с ИИ заканчивается/,
+  "между ИИ- и техническим маршрутами должна быть заметная граница"
+);
+assert.match(
+  documentationHtml,
+  /function scrollToSection\(section\)[\s\S]*querySelectorAll\("\[data-doc-target\]"\)/,
+  "карточки маршрутов должны прокручивать iframe тем же надёжным способом, что и содержание"
+);
+assert.match(
+  documentationHtml,
+  /function updateNavGroupVisibility\(\)[\s\S]*updateNavGroupVisibility\(\)/,
+  "поиск должен скрывать пустые групповые заголовки содержания"
+);
+assert.match(
+  documentationHtml,
   /Скачать TXT[\s\S]*ограничение по длине сообщения/,
   "developer-документация должна объяснять запасной путь для длинных промптов"
 );

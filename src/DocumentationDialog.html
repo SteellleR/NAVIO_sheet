@@ -204,6 +204,16 @@
         letter-spacing: .1em;
         text-transform: uppercase;
       }
+      .nav-group {
+        margin: 18px 10px 6px;
+        color: var(--yellow);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .1em;
+        line-height: 1.35;
+        text-transform: uppercase;
+      }
+      .nav-group:first-child { margin-top: 0; }
       .nav { display: grid; gap: 4px; }
       .nav a {
         display: flex;
@@ -492,8 +502,76 @@
         gap: 14px;
         margin-top: 24px;
       }
-      .audience-choice .card { background: rgba(255,255,255,.58); }
-      .audience-choice strong { display: block; margin-bottom: 8px; font-size: 18px; }
+      .path-choice {
+        display: flex;
+        min-height: 250px;
+        flex-direction: column;
+        padding: 24px;
+        border: 2px solid rgba(0,0,0,.18);
+        border-radius: 20px;
+        color: var(--black);
+        background: rgba(255,255,255,.72);
+        text-decoration: none;
+        transition: transform .18s ease, box-shadow .18s ease;
+      }
+      .path-choice:hover, .path-choice:focus-visible {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px rgba(0,0,0,.15);
+      }
+      .path-choice.ai { color: var(--white); background: var(--black); }
+      .path-choice-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .path-number { font-size: 44px; font-weight: 800; line-height: 1; }
+      .path-tag {
+        padding: 6px 10px;
+        border-radius: 999px;
+        color: var(--black);
+        background: var(--yellow);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+      .path-choice strong { display: block; margin: 30px 0 8px; font-size: 24px; }
+      .path-choice p { margin: 0; color: #666; font-size: 14px; line-height: 1.5; }
+      .path-choice.ai p { color: #aaa; }
+      .path-action { margin-top: auto; padding-top: 24px; font-size: 13px; font-weight: 800; }
+      .path-action b { color: var(--yellow); font-size: 18px; }
+      .path-marker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 22px;
+        padding: 7px 12px 7px 7px;
+        border: 1px solid #333;
+        border-radius: 999px;
+        color: #aaa;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+      }
+      .path-marker span {
+        padding: 5px 8px;
+        border-radius: 999px;
+        color: var(--black);
+        background: var(--yellow);
+      }
+      .path-marker b { color: inherit; }
+      .advanced-gate {
+        border: 3px solid var(--black);
+        box-shadow: 12px 12px 0 var(--black);
+      }
+      .advanced-gate .path-marker { border-color: rgba(0,0,0,.25); color: #444; }
+      .path-boundary {
+        margin-top: 28px;
+        padding: 18px;
+        border: 1px dashed #444;
+        border-radius: 14px;
+        color: #aaa;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .path-boundary strong { display: block; margin-bottom: 5px; color: var(--white); }
       .prompt-list { display: grid; gap: 16px; margin-top: 24px; }
       .prompt-card {
         overflow: hidden;
@@ -719,19 +797,20 @@
         </div>
 
         <div id="developerDoc" class="doc-view" data-doc="developer">
-          <section id="dev-roadmap" class="section yellow" data-nav-title="Как выбрать путь">
+          <section id="dev-roadmap" class="section yellow" data-nav-title="Как выбрать путь" data-nav-group="Сначала выбери путь">
             <div class="eyebrow">Точка входа</div>
-            <h2>Выбери способ сопровождения проекта</h2>
-            <p class="lead">Это bound-проект Google Apps Script на JavaScript V8. Он обслуживает рабочие строки, синхронизирует нативные dropdown-столбцы и строит обратимый отчёт по просроченным логам.</p>
+            <h2>Сначала выбери один из двух путей</h2>
+            <p class="lead">Не смешивай разделы. Если код для тебя тёмный лес, выбирай путь 01 и работай с готовыми промптами. Если самостоятельно читаешь JavaScript и HTML, выбирай путь 02 с полной технической документацией.</p>
             <div class="audience-choice">
-              <article class="card"><strong>Работаешь через обычный ИИ-чат?</strong><p>Открой блок «Для ИИ», выбери нужный промпт и скопируй или скачай его. Модель будет вести тебя по интерфейсу Apps Script пошагово.</p></article>
-              <article class="card"><strong>Уверенно работаешь с JavaScript и HTML?</strong><p>Переходи к «Продвинутым разработчикам»: там архитектура, триггеры, данные, квоты, тесты и открытый GitHub-репозиторий.</p></article>
+              <a class="path-choice ai" href="#dev-ai" data-doc-target="dev-ai"><span class="path-choice-top"><span class="path-number">01</span><span class="path-tag">Проще</span></span><strong>Для работы с ИИ</strong><p>Подойдёт, если ты не разработчик. Копируешь готовый промпт в нейронку, описываешь задачу и дальше идёшь по её шагам.</p><span class="path-action">Перейти к промптам <b>↓</b></span></a>
+              <a class="path-choice" href="#dev-advanced" data-doc-target="dev-advanced"><span class="path-choice-top"><span class="path-number">02</span><span class="path-tag">Технический</span></span><strong>Для прошаренного разработчика</strong><p>Подойдёт, если ты сам работаешь с JavaScript, Apps Script, GitHub, тестами, триггерами и API.</p><span class="path-action">Перейти к технической части <b>↓</b></span></a>
             </div>
           </section>
 
-          <section id="dev-ai" class="section dark" data-nav-title="Для ИИ">
+          <section id="dev-ai" class="section dark" data-nav-title="Начать работу с ИИ" data-nav-group="Путь 01 - Работа с ИИ">
+            <div class="path-marker"><span>Путь 01</span><b>Для работы с ИИ</b></div>
             <div class="eyebrow">Сопровождение без опыта разработки</div>
-            <h2>Два промпта для обычной чат-модели</h2>
+            <h2>Выбери один промпт и отдай задачу нейронке</h2>
             <p class="lead">Промпты не обязательно читать целиком. Если нужно изменить тексты, внешний вид или устройство документации, выбери «Изменить HTML-документацию». Если нужно добавить, удалить или поменять функциональность и принцип работы скриптов таблицы - выбери «Изменить backend и функциональность». Вставь нужный промпт в свою нейронку и напиши, что хочешь сделать: ИИ сам запросит необходимые файлы и скриншоты, задаст уточняющие вопросы и проведёт тебя по шагам.</p>
             <div class="callout danger no-symbol"><div><strong>Внимание!</strong><ol class="attention-list"><li>Промпты большие, поэтому некоторые ИИ-чаты могут не принять их обычным сообщением. В таком случае нажми «Скачать TXT» и прикрепи полученный файл к диалогу - это обычно помогает обойти ограничение по длине сообщения.</li><li>После действительно существенных изменений обнови документацию и сам промпт. Это уже заложено в инструкции: просто попроси ИИ помочь, а затем выполни предложенные шаги. Мелкие правки текста, цветов или опечаток переносить во все материалы не обязательно.</li><li>Разработку безопаснее вести на копии таблицы. Сначала внеси и обкатай изменения там, проверь основные сценарии и только после успешного теста переноси готовую версию в основную таблицу.</li></ol></div></div>
 
@@ -781,6 +860,8 @@ NAVIO Sheet - связанный с Google-таблицей проект Google 
 ТЕКУЩАЯ UI-МЕХАНИКА DOCUMENTATIONDIALOG.HTML
 - Верхняя часть содержит логотип NAVIO · OPERATIONS, режим справки и кнопку «Закрыть». Глобальной кнопки «Раскрыть всё» нет.
 - Боковое «Содержание» собирается динамически из section[data-nav-title]. Активен раздел, дошедший до контрольной линии примерно в первой трети окна. Клик отменяет стандартное действие ссылки и явно прокручивает iframe через window.scrollTo к выбранной секции. Не возвращай раннее переключение через неточный IntersectionObserver и не полагайся только на hash-переход внутри Apps Script.
+- В разработческом режиме содержание разделено атрибутами data-nav-group на точку выбора, «Путь 01 - Работа с ИИ» и «Путь 02 - Прошаренный разработчик». Групповые подписи создаются клиентским JS, а пустые группы скрываются при поиске.
+- В начале разработческой справки расположены две крупные кликабельные карточки маршрутов. Чёрная карточка ведёт к ИИ-промптам, светлая - к самостоятельной технической части. Между маршрутами есть явная граница окончания пути 01 и отдельная входная карточка пути 02. Не сливай эти маршруты обратно в один непрерывный список без явного запроса.
 - Поиск существует только в developer-режиме, фильтрует секции и пункты содержания. Лупа - выровненный inline SVG, а не маленький текстовый символ.
 - Кнопка наверх появляется после прокрутки; верхний индикатор показывает прогресс чтения.
 - Обычные code-block поддерживают копирование. ИИ-промпты дополнительно скачиваются как UTF-8 TXT и могут сохраняться через google.script.run.
@@ -950,11 +1031,13 @@ Apps Script имеет лимит одного обычного запуска 6
                 </div>
               </details>
             </div>
+            <div class="path-boundary"><strong>На этом путь для работы с ИИ заканчивается</strong>Технические разделы ниже читать не обязательно. Они предназначены для разработчика, который будет менять и публиковать код самостоятельно.</div>
           </section>
 
-          <section id="dev-advanced" class="section yellow" data-nav-title="Продвинутым разработчикам">
+          <section id="dev-advanced" class="section yellow advanced-gate" data-nav-title="Начать техническую часть" data-nav-group="Путь 02 - Прошаренный разработчик">
+            <div class="path-marker"><span>Путь 02</span><b>Для прошаренного разработчика</b></div>
             <div class="eyebrow">Полная техническая карта</div>
-            <h2>Дальше - для тех, кто работает с кодом напрямую</h2>
+            <h2>Дальше - самостоятельная работа с кодом</h2>
             <p class="lead">Ниже описаны стек, глобальное пространство Apps Script, модули, события, хранение состояния, квоты, диагностика и безопасная публикация. Этот путь подходит разработчикам, которые готовы читать JavaScript и самостоятельно проверять изменения.</p>
           </section>
 
@@ -1208,23 +1291,57 @@ npm run check<button class="copy-button" type="button" aria-label="Копиро�
           });
         }
 
+        function scrollToSection(section) {
+          if (!section) return;
+          setActiveNav(section.id);
+          const targetTop = window.scrollY +
+            section.getBoundingClientRect().top - 20;
+          window.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: "smooth"
+          });
+        }
+
+        let currentNavGroup = "";
         sections.forEach(function(section) {
+          const groupName = section.dataset.navGroup || currentNavGroup;
+          if (section.dataset.navGroup && section.dataset.navGroup !== currentNavGroup) {
+            currentNavGroup = section.dataset.navGroup;
+            const group = document.createElement("div");
+            group.className = "nav-group";
+            group.dataset.group = currentNavGroup;
+            group.textContent = currentNavGroup;
+            nav.appendChild(group);
+          }
           const link = document.createElement("a");
           link.href = "#" + section.id;
           link.textContent = section.dataset.navTitle;
           link.dataset.target = section.id;
+          link.dataset.group = groupName;
           link.addEventListener("click", function(event) {
             event.preventDefault();
-            setActiveNav(section.id);
-            const targetTop = window.scrollY +
-              section.getBoundingClientRect().top - 20;
-            window.scrollTo({
-              top: Math.max(0, targetTop),
-              behavior: "smooth"
-            });
+            scrollToSection(section);
           });
           nav.appendChild(link);
         });
+
+        document.querySelectorAll("[data-doc-target]").forEach(function(link) {
+          link.addEventListener("click", function(event) {
+            event.preventDefault();
+            scrollToSection(document.getElementById(link.dataset.docTarget));
+          });
+        });
+
+        function updateNavGroupVisibility() {
+          nav.querySelectorAll(".nav-group").forEach(function(group) {
+            const hasVisibleLink = Array.from(
+              nav.querySelectorAll('a[data-group="' + group.dataset.group + '"]')
+            ).some(function(link) {
+              return link.style.display !== "none";
+            });
+            group.style.display = hasVisibleLink ? "block" : "none";
+          });
+        }
 
         search.addEventListener("input", function() {
           const query = search.value.trim().toLowerCase();
@@ -1236,6 +1353,7 @@ npm run check<button class="copy-button" type="button" aria-label="Копиро�
             if (link) link.style.display = matches ? "flex" : "none";
             if (matches) visible++;
           });
+          updateNavGroupVisibility();
           emptySearch.classList.toggle("visible", visible === 0);
           updateActiveNav();
         });
